@@ -1,24 +1,30 @@
 import { useState, useEffect } from "react";
 
-export function fetchData() {
+export function useFashionData() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    try {
-      const retrieveData = async () => {
+    const retrieveData = async () => {
+      try {
         setLoading(true);
         setError(null);
 
-        // Url here
-      };
-    } catch (err) {
-      setError(err.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  });
+        const response = await fetch(
+          "https://fakestoreapi.com/products/category/jewelery",
+        );
+        const result = await response.json();
+        setData(result);
+      } catch (err) {
+        setError(err.message || "Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    retrieveData();
+  }, []);
 
   return { data, loading, error };
 }

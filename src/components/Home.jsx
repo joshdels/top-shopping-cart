@@ -11,7 +11,7 @@ export default function Home() {
 
       <div>
         <p>One stop fashion within your budget</p>
-        <Link to="shop"> Shop Now</Link>
+        <Link to="/shop"> Shop Now</Link>
       </div>
     </>
   );

@@ -1,6 +1,6 @@
-import { Link } from "react-router";
+import { Link, useOutletContext } from "react-router";
 
-export default function Navigation() {
+export default function Navigation({ userChoice }) {
   return (
     <>
       <nav>
@@ -8,7 +8,9 @@ export default function Navigation() {
         <div>
           <Link to="/">Home</Link>
           <Link to="shop">Shop</Link>
-          <Link to="cart">Cart</Link>
+          <Link to="cart">
+            Cart {userChoice.length > 0 && userChoice.length}{" "}
+          </Link>
         </div>
       </nav>
     </>
