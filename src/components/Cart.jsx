@@ -1,33 +1,61 @@
 import { useState } from "react";
-import { Link, Links, useOutletContext } from "react-router";
+import { Link, useOutletContext } from "react-router";
 
 export default function Cart() {
-  const { userChoice } = useOutletContext();
-  const [totalPrice, setTotalPrice] = useState(0);
+  const { userChoice, setUserChoice } = useOutletContext();
 
-  const unique = [];
+  const handleUnique = () => {
+    return userChoice.reduce((acc, item) => {
+      const existing = acc.find((i) => i.id === item.id);
 
-  userChoice.forEach((item) => {
-    const existing = unique.find((i) => i.id === item.id);
+      if (existing) {
+        existing.count++;
+      } else {
+        acc.push({ ...item, count: 1 });
+      }
 
-    if (existing) {
-      existing.count++;
-    } else {
-      unique.push({ ...item, count: 1 });
-    }
-  });
+      return acc;
+    }, []);
+  };
 
-  const removeItem = () => {
+  const unique = handleUnique();
 
-  }
+  const rawTotalPrice = unique.reduce(
+    (sum, item) => sum + item.count * item.price,
+    0,
+  );
+  const totalPrice = rawTotalPrice.toFixed(2);
 
-  const addItem = () => {
+  const removeItem = (itemId) => {
+    setUserChoice((prev) => {
+      const index = prev.findIndex((item) => item.id === itemId);
 
-  }
+      if (index === -1) return prev;
 
-  const removeAllItem = () => {
-    
-  }
+      const updated = [...prev];
+      updated.splice(index, 1);
+
+      return updated;
+    });
+  };
+
+  const addItem = (itemId) => {
+    setUserChoice((prev) => {
+      const item = prev.find((item) => item.id === itemId);
+
+      if (!item) return prev;
+
+      return [...prev, item];
+    });
+  };
+
+  const removeGroupItem = (itemId) => {
+    setUserChoice(userChoice.filter((item) => item.id !== itemId));
+  };
+
+  const removeAllItems = () => {
+    setUserChoice([]);
+  };
 
   return (
     <>
@@ -38,18 +66,28 @@ export default function Cart() {
               <div className="card" key={item.id}>
                 <img src={item.image} alt={item.title} />
                 <p>{item.price}</p>
-                <p>total cost: {}</p>
-                <p>quantity</p>
-                <p>{item.count}</p>
+                <p>total cost: ${item.price * item.count}</p>
+                <p>price: ${item.price}</p>
+                <div>
+                  <button onClick={() => removeItem(item.id)}>minus</button>
+                  <p>{item.count}</p>
+                  <button onClick={() => addItem(item.id)}>add</button>
+                </div>
+
+                <button onClick={() => removeGroupItem(item.id)}>remove</button>
               </div>
             ))}
+
+          {unique.length > 0 && (
+            <button onClick={removeAllItems}>empty cart</button>
+          )}
         </div>
       </main>
 
       <aside>
         {userChoice.length > 0 ? (
           <div>
-            <button>Checkout</button>
+            <button onClick={removeAllItems}>Checkout</button>
           </div>
         ) : (
           <div>

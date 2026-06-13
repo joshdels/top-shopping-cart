@@ -3,7 +3,8 @@ import { useFashionData } from "../hooks/fakeapi";
 import { useOutletContext } from "react-router";
 
 export default function Shop() {
-  const { data, loading, error } = useFashionData();
+  const [category, setCategory] = useState("jewelery");
+  const { data, loading, error } = useFashionData(category);
   const { userChoice, setUserChoice } = useOutletContext();
 
   const handleChoice = (e) => {
@@ -14,13 +15,17 @@ export default function Shop() {
     setUserChoice((prev) => [...prev, selected]);
   };
 
-  useEffect(() => {
-    console.log(userChoice);
-  }, [userChoice]);
-
   return (
     <>
       <h1>Shop</h1>
+
+      <div className="choices">
+        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+          <option value="jewelery">jewelery</option>
+          <option value="men's clothing">men's clothing</option>
+          <option value="women's clothing">women's clothing</option>
+        </select>
+      </div>
 
       <div id="card-container">
         {data &&

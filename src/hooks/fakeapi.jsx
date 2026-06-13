@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export function useFashionData() {
+export function useFashionData(category) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,7 +12,7 @@ export function useFashionData() {
         setError(null);
 
         const response = await fetch(
-          "https://fakestoreapi.com/products/category/jewelery",
+          `https://fakestoreapi.com/products/category/${category}`,
         );
         const result = await response.json();
         setData(result);
@@ -24,7 +24,7 @@ export function useFashionData() {
     };
 
     retrieveData();
-  }, []);
+  }, [category]);
 
   return { data, loading, error };
 }
