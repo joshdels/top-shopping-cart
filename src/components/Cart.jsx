@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { Link, useOutletContext } from "react-router";
+import BackspaceSharpIcon from "@mui/icons-material/BackspaceSharp";
+import AddCircleOutlineSharpIcon from "@mui/icons-material/AddCircleOutlineSharp";
+import DoNotDisturbOnOutlinedIcon from "@mui/icons-material/DoNotDisturbOnOutlined";
 
 export default function Cart() {
   const { userChoice, setUserChoice } = useOutletContext();
@@ -58,45 +61,61 @@ export default function Cart() {
   };
 
   return (
-    <>
-      <main>
-        <div className="card-container">
-          {unique.length > 0 &&
-            unique.map((item) => (
+    <div className="cart-container">
+      {unique.length > 0 && (
+        <main>
+          <div className="card-container">
+            {unique.map((item) => (
               <div className="card" key={item.id}>
                 <img src={item.image} alt={item.title} />
-                <p>{item.price}</p>
-                <p>total cost: ${item.price * item.count}</p>
-                <p>price: ${item.price}</p>
-                <div>
-                  <button onClick={() => removeItem(item.id)}>minus</button>
-                  <p>{item.count}</p>
-                  <button onClick={() => addItem(item.id)}>add</button>
+                <div className="content">
+                  <div className="header">
+                    <h3>{item.title}</h3>
+                    <button onClick={() => removeGroupItem(item.id)}>
+                      <BackspaceSharpIcon />
+                    </button>
+                  </div>
+                  <p>price: ${item.price}</p>
+                  <p>total cost: ${item.price * item.count}</p>
+                  <div className="buttons">
+                    <p>Quantity:</p>
+                    <button onClick={() => removeItem(item.id)}>
+                      <DoNotDisturbOnOutlinedIcon />
+                    </button>
+                    <p>{item.count}</p>
+                    <button onClick={() => addItem(item.id)}>
+                      <AddCircleOutlineSharpIcon />
+                    </button>
+                  </div>
                 </div>
-
-                <button onClick={() => removeGroupItem(item.id)}>remove</button>
               </div>
             ))}
 
-          {unique.length > 0 && (
-            <button onClick={removeAllItems}>empty cart</button>
-          )}
-        </div>
-      </main>
+            {unique.length > 0 && (
+              <button onClick={removeAllItems} className="empty-cart">
+                empty cart
+              </button>
+            )}
+          </div>
+        </main>
+      )}
 
       <aside>
-        {userChoice.length > 0 ? (
-          <div>
-            <button onClick={removeAllItems}>Checkout</button>
-          </div>
-        ) : (
-          <div>
-            <h1>Your cart is empty</h1>
-            <p>Add more items to your cart.</p>
-            <Link to="/shop">Shop Now!</Link>
-          </div>
-        )}
+        <div className="cart">
+          {userChoice.length > 0 ? (
+            <div className="checkout">
+              <h1>Total Price: ${totalPrice}</h1>
+              <button onClick={removeAllItems}>Checkout</button>
+            </div>
+          ) : (
+            <div>
+              <h1>Your cart is empty</h1>
+              <p>Add more items to your cart.</p>
+              <Link to="/shop">Shop Now!</Link>
+            </div>
+          )}
+        </div>
       </aside>
-    </>
+    </div>
   );
 }

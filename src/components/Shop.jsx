@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 import { useFashionData } from "../hooks/fakeapi";
 import { useOutletContext } from "react-router";
+import AddShoppingCartSharpIcon from "@mui/icons-material/AddShoppingCartSharp";
 
 export default function Shop() {
   const [category, setCategory] = useState("jewelery");
   const { data, loading, error } = useFashionData(category);
   const { userChoice, setUserChoice } = useOutletContext();
+
+  const handleCategory = (e) => {
+    setCategory(e.target.value);
+  };
 
   const handleChoice = (e) => {
     const choice = e.currentTarget.id;
@@ -16,34 +21,54 @@ export default function Shop() {
   };
 
   return (
-    <>
-      <h1>Shop</h1>
-
+    <div className="shop">
       <div className="choices">
-        <select value={category} onChange={(e) => setCategory(e.target.value)}>
-          <option value="jewelery">jewelery</option>
-          <option value="men's clothing">men's clothing</option>
-          <option value="women's clothing">women's clothing</option>
-        </select>
+        <button
+          className={category === "jewelery" ? "active" : ""}
+          onClick={() => setCategory("jewelery")}
+        >
+          Jewelry
+        </button>
+
+        <button
+          className={category === "men's clothing" ? "active" : ""}
+          onClick={() => setCategory("men's clothing")}
+        >
+          Men
+        </button>
+
+        <button
+          className={category === "women's clothing" ? "active" : ""}
+          onClick={() => setCategory("women's clothing")}
+        >
+          Women
+        </button>
       </div>
 
-      <div id="card-container">
-        {data &&
-          data.map((item) => (
+      <div className="card-container">
+        {loading ? (
+          <div className="loading-container">
+            <div className="loading"></div>
+          </div>
+        ) : (
+          data?.map((item) => (
             <div className="card" key={item.id}>
               <img src={item.image} alt={item.title} />
-              <h1>{item.title}</h1>
-              <p>${item.price}</p>
-              <button
-                className="add-button"
-                id={item.id}
-                onClick={handleChoice}
-              >
-                add
-              </button>
+              <h3>{item.title}</h3>
+
+              <div className="add-button">
+                <p>${item.price}</p>
+
+                <AddShoppingCartSharpIcon
+                  id={item.id}
+                  className="add-icon"
+                  onClick={handleChoice}
+                />
+              </div>
             </div>
-          ))}
+          ))
+        )}
       </div>
-    </>
+    </div>
   );
 }
